@@ -2,6 +2,7 @@ package com.saucedemo.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
 
@@ -16,19 +17,26 @@ public class InventoryPage extends BasePage {
     }
 
     public void addItemToCart(String itemName) {
-        By btn = By.xpath(
+        By addBtn = By.xpath(
             "//div[contains(@class,'inventory_item') and .//div[text()='" + itemName + "']]" +
-            "//button[contains(@class,'btn_inventory')]"
+            "//button[contains(text(),'Add to cart')]"
         );
-        waitForClickable(btn).click();
-    }
-
-    public void removeItemFromCart(String itemName) {
-        By btn = By.xpath(
+        waitForClickable(addBtn).click();
+        // Wait for the button to flip to "Remove" — confirms the add registered in the DOM
+        // before any subsequent addItemToCart call reads the badge count.
+        By removeBtn = By.xpath(
             "//div[contains(@class,'inventory_item') and .//div[text()='" + itemName + "']]" +
             "//button[contains(text(),'Remove')]"
         );
-        waitForClickable(btn).click();
+        waitForVisible(removeBtn);
+    }
+
+    public void removeItemFromCart(String itemName) {
+        By removeBtn = By.xpath(
+            "//div[contains(@class,'inventory_item') and .//div[text()='" + itemName + "']]" +
+            "//button[contains(text(),'Remove')]"
+        );
+        waitForClickable(removeBtn).click();
     }
 
     public int getCartCount() {
@@ -42,6 +50,7 @@ public class InventoryPage extends BasePage {
 
     public CartPage openCart() {
         waitForClickable(CART_LINK).click();
+        wait.until(ExpectedConditions.urlContains("/cart.html"));
         return new CartPage(driver);
     }
 }
