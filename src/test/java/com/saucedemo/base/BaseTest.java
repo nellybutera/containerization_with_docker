@@ -1,6 +1,10 @@
 package com.saucedemo.base;
 
+import com.saucedemo.utils.TestConfig;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.qameta.allure.Attachment;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,9 +17,7 @@ import java.util.logging.Logger;
 
 public class BaseTest {
 
-    protected static final String BASE_URL = "https://www.saucedemo.com/";
     protected WebDriver driver;
-
     private static final Logger log = Logger.getLogger(BaseTest.class.getName());
 
     @BeforeMethod
@@ -29,7 +31,6 @@ public class BaseTest {
 
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-        // Always required in Docker (root process, limited /dev/shm)
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-gpu");
@@ -42,17 +43,23 @@ public class BaseTest {
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
         driver.manage().window().maximize();
-        driver.get(BASE_URL);
-        log.info("Browser opened — navigated to " + BASE_URL);
+        driver.get(TestConfig.get("base.url"));
+        log.info("Browser opened — navigated to " + TestConfig.get("base.url"));
     }
 
     @AfterMethod(alwaysRun = true)
     public void tearDown(ITestResult result) {
         if (result.getStatus() == ITestResult.FAILURE) {
             log.warning("Test FAILED: " + result.getName());
+            captureScreenshot(result.getName());
         }
         if (driver != null) {
             driver.quit();
         }
+    }
+
+    @Attachment(value = "Screenshot — {testName}", type = "image/png")
+    private byte[] captureScreenshot(String testName) {
+        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 }
