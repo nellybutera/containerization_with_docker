@@ -1,0 +1,4 @@
+firstname,lastname,zip,expected_error,description
+,,,First Name is required,No info entered at all
+Nelly,,,Last Name is required,First name filled but last name missing
+Nelly,Butera,,Postal Code is required,Full name filled but zip code missing

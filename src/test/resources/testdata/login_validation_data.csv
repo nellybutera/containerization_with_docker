@@ -1,0 +1,4 @@
+username,password,expected_error,description
+standard_user,wrong_password,Username and password do not match,Wrong password for valid user
+locked_out_user,secret_sauce,locked out,Locked-out user account
+,,Username is required,Empty username and password

@@ -7,11 +7,13 @@ import com.saucedemo.pages.CheckoutInfoPage;
 import com.saucedemo.pages.CheckoutReviewPage;
 import com.saucedemo.pages.InventoryPage;
 import com.saucedemo.pages.LoginPage;
+import com.saucedemo.utils.CsvDataProvider;
 import com.saucedemo.utils.TestConfig;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @Feature("Checkout")
@@ -24,6 +26,9 @@ public class CheckoutTest extends BaseTest {
         return inventory.openCart();
     }
 
+    // -------------------------------------------------------------------------
+    // TC-11: Happy path — full checkout flow completes successfully
+    // -------------------------------------------------------------------------
     @Test
     @Story("Happy path")
     @Description("TC-11: Completing the full checkout flow should display the order confirmation page")
@@ -39,41 +44,9 @@ public class CheckoutTest extends BaseTest {
                 "Checkout complete page should show 'Thank you' after full flow");
     }
 
-    @Test
-    @Story("Form validation")
-    @Description("TC-12: Clicking Continue with no info entered — form should require first name")
-    public void tc12_checkoutWithNoInfoShowsFirstNameError() {
-        CartPage cart = cartWithOneItem();
-        CheckoutInfoPage info = cart.clickCheckout();
-        info.clickContinue();
-        Assert.assertTrue(info.getErrorMessage().contains("First Name is required"),
-                "Should require first name when no info entered");
-    }
-
-    @Test
-    @Story("Form validation")
-    @Description("TC-13: Entering only first name and clicking Continue — form should require last name")
-    public void tc13_checkoutWithNoLastNameShowsError() {
-        CartPage cart = cartWithOneItem();
-        CheckoutInfoPage info = cart.clickCheckout();
-        info.fillFirstName(TestConfig.get("checkout.firstname")).clickContinue();
-        Assert.assertTrue(info.getErrorMessage().contains("Last Name is required"),
-                "Should require last name when only first name entered");
-    }
-
-    @Test
-    @Story("Form validation")
-    @Description("TC-14: Entering name but no postal code — form should require postal code")
-    public void tc14_checkoutWithNoZipShowsError() {
-        CartPage cart = cartWithOneItem();
-        CheckoutInfoPage info = cart.clickCheckout();
-        info.fillFirstName(TestConfig.get("checkout.firstname"))
-            .fillLastName(TestConfig.get("checkout.lastname"))
-            .clickContinue();
-        Assert.assertTrue(info.getErrorMessage().contains("Postal Code is required"),
-                "Should require postal code when name is filled but zip is missing");
-    }
-
+    // -------------------------------------------------------------------------
+    // TC-15: Review page shows item total
+    // -------------------------------------------------------------------------
     @Test
     @Story("Happy path")
     @Description("TC-15: The order review page should display a non-empty item total")
@@ -86,5 +59,32 @@ public class CheckoutTest extends BaseTest {
                 TestConfig.get("checkout.zip"));
         Assert.assertFalse(review.getItemTotal().isEmpty(),
                 "Review page should display the item total");
+    }
+
+    // -------------------------------------------------------------------------
+    // TC-12 / TC-13 / TC-14 — data-driven: incomplete form validation
+    // Rows come from testdata/checkout_validation_data.csv:
+    //   firstname | lastname | zip | expected_error | description
+    // -------------------------------------------------------------------------
+    @DataProvider(name = "checkoutValidationData")
+    public Object[][] checkoutValidationData() {
+        return CsvDataProvider.read("testdata/checkout_validation_data.csv");
+    }
+
+    @Test(dataProvider = "checkoutValidationData")
+    @Story("Form validation")
+    @Description("Data-driven: each CSV row supplies partial form data and the validation error it should trigger")
+    public void tcDD_checkoutValidationShowsCorrectError(
+            String firstname, String lastname, String zip,
+            String expectedError, String description) {
+        CartPage cart = cartWithOneItem();
+        CheckoutInfoPage info = cart.clickCheckout();
+        info.fillFirstName(firstname)
+            .fillLastName(lastname)
+            .fillZip(zip)
+            .clickContinue();
+        Assert.assertTrue(info.getErrorMessage().contains(expectedError),
+                "[" + description + "] Expected error '" + expectedError
+                        + "' but got: " + info.getErrorMessage());
     }
 }
