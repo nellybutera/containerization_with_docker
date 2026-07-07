@@ -63,5 +63,5 @@ jobs:
           publish_dir: allure-history
 
       - name: Fail job if tests failed
-        if: steps.test_run.outcome == 'failure'
+        if: always() && steps.test_run.outcome == 'failure'
         run: exit 1
