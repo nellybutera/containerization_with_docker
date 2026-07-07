@@ -51,6 +51,11 @@ public class BaseTest {
     public void tearDown(ITestResult result) {
         if (result.getStatus() == ITestResult.FAILURE) {
             log.warning("Test FAILED: " + result.getName());
+            log.warning("Current URL at failure: " + driver.getCurrentUrl());
+            log.warning("Page title at failure: " + driver.getTitle());
+            String source = driver.getPageSource();
+            log.warning("Page source length: " + source.length()
+                    + " | first 500 chars: " + source.substring(0, Math.min(500, source.length())));
             captureScreenshot(result.getName());
         }
         if (driver != null) {
