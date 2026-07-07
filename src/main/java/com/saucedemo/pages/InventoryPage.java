@@ -1,5 +1,6 @@
 package com.saucedemo.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -16,6 +17,7 @@ public class InventoryPage extends BasePage {
         super(driver);
     }
 
+    @Step("Add '{itemName}' to cart from inventory page")
     public void addItemToCart(String itemName) {
         By addBtn = By.xpath(
             "//div[contains(@class,'inventory_item') and .//div[text()='" + itemName + "']]" +
@@ -31,6 +33,7 @@ public class InventoryPage extends BasePage {
         waitForVisible(removeBtn);
     }
 
+    @Step("Remove '{itemName}' from cart via inventory page")
     public void removeItemFromCart(String itemName) {
         By removeBtn = By.xpath(
             "//div[contains(@class,'inventory_item') and .//div[text()='" + itemName + "']]" +
@@ -48,6 +51,7 @@ public class InventoryPage extends BasePage {
         return driver.findElements(INVENTORY_ITEMS).size();
     }
 
+    @Step("Open the cart page")
     public CartPage openCart() {
         waitForClickable(CART_LINK).click();
         wait.until(ExpectedConditions.urlContains("/cart.html"));

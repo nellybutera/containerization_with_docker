@@ -1,5 +1,6 @@
 package com.saucedemo.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -34,6 +35,7 @@ public class CartPage extends BasePage {
         }
     }
 
+    @Step("Remove '{itemName}' from cart page")
     public void removeItem(String itemName) {
         By removeBtn = By.xpath(
             "//div[contains(@class,'cart_item') and .//div[text()='" + itemName + "']]" +
@@ -42,6 +44,7 @@ public class CartPage extends BasePage {
         waitForClickable(removeBtn).click();
     }
 
+    @Step("Click Checkout")
     public CheckoutInfoPage clickCheckout() {
         wait.until(ExpectedConditions.urlContains("/cart.html"));
         waitForClickable(CHECKOUT_BUTTON).click();

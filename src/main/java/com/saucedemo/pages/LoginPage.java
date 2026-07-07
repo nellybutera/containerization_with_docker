@@ -1,5 +1,6 @@
 package com.saucedemo.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -14,6 +15,7 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
+    @Step("Log in as '{username}'")
     public InventoryPage loginAs(String username, String password) {
         waitForVisible(USERNAME).clear();
         driver.findElement(USERNAME).sendKeys(username);

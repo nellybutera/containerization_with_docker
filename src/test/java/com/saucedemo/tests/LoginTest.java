@@ -5,8 +5,9 @@ import com.saucedemo.pages.InventoryPage;
 import com.saucedemo.pages.LoginPage;
 import com.saucedemo.utils.CsvDataProvider;
 import com.saucedemo.utils.TestConfig;
-import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -15,12 +16,9 @@ import org.testng.annotations.Test;
 @Feature("Login")
 public class LoginTest extends BaseTest {
 
-    // -------------------------------------------------------------------------
-    // TC-01: Happy path — valid login redirects to inventory
-    // -------------------------------------------------------------------------
-    @Test
+    @Test(description = "TC-01: Verify that a standard user with correct credentials lands on the inventory page")
     @Story("Valid credentials")
-    @Description("TC-01: Standard user with correct credentials should land on the inventory page")
+    @Severity(SeverityLevel.BLOCKER)
     public void tc01_validLoginRedirectsToInventory() {
         LoginPage login = new LoginPage(driver);
         login.loginAs(TestConfig.get("user.standard"), TestConfig.get("password.valid"));
@@ -28,12 +26,9 @@ public class LoginTest extends BaseTest {
                 "Valid login should redirect to inventory page");
     }
 
-    // -------------------------------------------------------------------------
-    // TC-05: Inventory content loads after login
-    // -------------------------------------------------------------------------
-    @Test
+    @Test(description = "TC-05: Verify that the inventory page displays at least one product after valid login")
     @Story("Valid credentials")
-    @Description("TC-05: After valid login the inventory page should display at least one product")
+    @Severity(SeverityLevel.CRITICAL)
     public void tc05_inventoryPageShowsProductsAfterLogin() {
         LoginPage login = new LoginPage(driver);
         InventoryPage inventory = login.loginAs(
@@ -42,19 +37,17 @@ public class LoginTest extends BaseTest {
                 "Inventory page should display products after login");
     }
 
-    // -------------------------------------------------------------------------
-    // TC-02 / TC-03 / TC-04 — data-driven: invalid credential scenarios
     // Rows come from testdata/login_validation_data.csv:
     //   username | password | expected_error | description
-    // -------------------------------------------------------------------------
     @DataProvider(name = "loginValidationData")
     public Object[][] loginValidationData() {
         return CsvDataProvider.read("testdata/login_validation_data.csv");
     }
 
-    @Test(dataProvider = "loginValidationData")
+    @Test(dataProvider = "loginValidationData",
+          description = "TC-02/03/04: Verify that an invalid credential combination shows the correct validation error")
     @Story("Invalid credentials")
-    @Description("Data-driven: each CSV row supplies a credential combination and the error text it should trigger")
+    @Severity(SeverityLevel.NORMAL)
     public void tcDD_loginValidationShowsCorrectError(
             String username, String password, String expectedError, String description) {
         LoginPage login = new LoginPage(driver);

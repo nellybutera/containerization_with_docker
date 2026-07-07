@@ -5,8 +5,10 @@ import com.saucedemo.pages.CartPage;
 import com.saucedemo.pages.InventoryPage;
 import com.saucedemo.pages.LoginPage;
 import com.saucedemo.utils.TestConfig;
-import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Step;
 import io.qameta.allure.Story;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -14,14 +16,15 @@ import org.testng.annotations.Test;
 @Feature("Cart")
 public class CartTest extends BaseTest {
 
+    @Step("Given: logged in as standard user")
     private InventoryPage loggedIn() {
         return new LoginPage(driver).loginAs(
                 TestConfig.get("user.standard"), TestConfig.get("password.valid"));
     }
 
-    @Test
+    @Test(description = "TC-06: Verify that adding one item updates the cart badge to 1")
     @Story("Add to cart")
-    @Description("TC-06: Adding one item should update the cart badge to 1")
+    @Severity(SeverityLevel.CRITICAL)
     public void tc06_addSingleItemUpdatesCartBadge() {
         InventoryPage inventory = loggedIn();
         inventory.addItemToCart(TestConfig.get("item.backpack"));
@@ -29,9 +32,9 @@ public class CartTest extends BaseTest {
                 "Cart badge should show 1 after adding one item");
     }
 
-    @Test
+    @Test(description = "TC-07: Verify that adding two different items updates the cart badge to 2")
     @Story("Add to cart")
-    @Description("TC-07: Adding two different items should update the cart badge to 2")
+    @Severity(SeverityLevel.CRITICAL)
     public void tc07_addTwoItemsBadgeShowsTwo() {
         InventoryPage inventory = loggedIn();
         inventory.addItemToCart(TestConfig.get("item.backpack"));
@@ -40,9 +43,9 @@ public class CartTest extends BaseTest {
                 "Cart badge should show 2 after adding two items");
     }
 
-    @Test
+    @Test(description = "TC-08: Verify that removing one of two items from the inventory page decreases the cart badge to 1")
     @Story("Remove from cart")
-    @Description("TC-08: Removing one of two items from the inventory page should decrease the badge to 1")
+    @Severity(SeverityLevel.NORMAL)
     public void tc08_removeItemDecreasesCartCount() {
         InventoryPage inventory = loggedIn();
         inventory.addItemToCart(TestConfig.get("item.backpack"));
@@ -52,9 +55,9 @@ public class CartTest extends BaseTest {
                 "Cart badge should show 1 after removing one of two items");
     }
 
-    @Test
+    @Test(description = "TC-09: Verify that the cart page shows the item that was added on the inventory page")
     @Story("Cart page")
-    @Description("TC-09: Navigating to the cart page should show the item that was added")
+    @Severity(SeverityLevel.CRITICAL)
     public void tc09_cartPageShowsAddedItem() {
         InventoryPage inventory = loggedIn();
         inventory.addItemToCart(TestConfig.get("item.backpack"));
@@ -63,9 +66,9 @@ public class CartTest extends BaseTest {
                 "Cart page should list the added item");
     }
 
-    @Test
+    @Test(description = "TC-10: Verify that removing the only item from the cart page leaves the cart empty")
     @Story("Remove from cart")
-    @Description("TC-10: Removing the only item from the cart page should leave the cart empty")
+    @Severity(SeverityLevel.NORMAL)
     public void tc10_removeItemFromCartPageEmptiesCart() {
         InventoryPage inventory = loggedIn();
         inventory.addItemToCart(TestConfig.get("item.backpack"));

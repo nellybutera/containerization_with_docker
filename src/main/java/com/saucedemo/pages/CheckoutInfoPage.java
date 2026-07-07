@@ -1,5 +1,6 @@
 package com.saucedemo.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -15,28 +16,33 @@ public class CheckoutInfoPage extends BasePage {
         super(driver);
     }
 
+    @Step("Fill first name: '{value}'")
     public CheckoutInfoPage fillFirstName(String value) {
         waitForVisible(FIRST_NAME).sendKeys(value);
         return this;
     }
 
+    @Step("Fill last name: '{value}'")
     public CheckoutInfoPage fillLastName(String value) {
         waitForVisible(LAST_NAME).sendKeys(value);
         return this;
     }
 
+    @Step("Fill postal code: '{value}'")
     public CheckoutInfoPage fillZip(String value) {
         waitForVisible(ZIP).sendKeys(value);
         return this;
     }
 
     /** Click Continue without navigating — stays on this page when validation fails. */
+    @Step("Click Continue")
     public CheckoutInfoPage clickContinue() {
         waitForClickable(CONTINUE).click();
         return this;
     }
 
     /** Happy-path shortcut: fill all fields and continue to the review step. */
+    @Step("Submit checkout info: '{firstName}' '{lastName}', zip '{zip}'")
     public CheckoutReviewPage submitValidForm(String firstName, String lastName, String zip) {
         fillFirstName(firstName);
         fillLastName(lastName);

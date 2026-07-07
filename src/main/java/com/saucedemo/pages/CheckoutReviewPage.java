@@ -1,5 +1,6 @@
 package com.saucedemo.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -16,6 +17,7 @@ public class CheckoutReviewPage extends BasePage {
         return waitForVisible(ITEM_TOTAL).getText();
     }
 
+    @Step("Click Finish to complete the order")
     public CheckoutCompletePage clickFinish() {
         waitForClickable(FINISH_BUTTON).click();
         return new CheckoutCompletePage(driver);

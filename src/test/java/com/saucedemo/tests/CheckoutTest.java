@@ -9,8 +9,10 @@ import com.saucedemo.pages.InventoryPage;
 import com.saucedemo.pages.LoginPage;
 import com.saucedemo.utils.CsvDataProvider;
 import com.saucedemo.utils.TestConfig;
-import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Step;
 import io.qameta.allure.Story;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -19,6 +21,7 @@ import org.testng.annotations.Test;
 @Feature("Checkout")
 public class CheckoutTest extends BaseTest {
 
+    @Step("Given: logged in as standard user with one item in cart")
     private CartPage cartWithOneItem() {
         InventoryPage inventory = new LoginPage(driver).loginAs(
                 TestConfig.get("user.standard"), TestConfig.get("password.valid"));
@@ -26,12 +29,9 @@ public class CheckoutTest extends BaseTest {
         return inventory.openCart();
     }
 
-    // -------------------------------------------------------------------------
-    // TC-11: Happy path — full checkout flow completes successfully
-    // -------------------------------------------------------------------------
-    @Test
+    @Test(description = "TC-11: Verify that completing the full checkout flow displays the order confirmation page")
     @Story("Happy path")
-    @Description("TC-11: Completing the full checkout flow should display the order confirmation page")
+    @Severity(SeverityLevel.BLOCKER)
     public void tc11_completeCheckoutFlowShowsConfirmation() {
         CartPage cart = cartWithOneItem();
         CheckoutInfoPage info = cart.clickCheckout();
@@ -44,12 +44,9 @@ public class CheckoutTest extends BaseTest {
                 "Checkout complete page should show 'Thank you' after full flow");
     }
 
-    // -------------------------------------------------------------------------
-    // TC-15: Review page shows item total
-    // -------------------------------------------------------------------------
-    @Test
+    @Test(description = "TC-15: Verify that the order review page displays a non-empty item total")
     @Story("Happy path")
-    @Description("TC-15: The order review page should display a non-empty item total")
+    @Severity(SeverityLevel.NORMAL)
     public void tc15_reviewPageShowsItemTotal() {
         CartPage cart = cartWithOneItem();
         CheckoutInfoPage info = cart.clickCheckout();
@@ -61,19 +58,17 @@ public class CheckoutTest extends BaseTest {
                 "Review page should display the item total");
     }
 
-    // -------------------------------------------------------------------------
-    // TC-12 / TC-13 / TC-14 — data-driven: incomplete form validation
     // Rows come from testdata/checkout_validation_data.csv:
     //   firstname | lastname | zip | expected_error | description
-    // -------------------------------------------------------------------------
     @DataProvider(name = "checkoutValidationData")
     public Object[][] checkoutValidationData() {
         return CsvDataProvider.read("testdata/checkout_validation_data.csv");
     }
 
-    @Test(dataProvider = "checkoutValidationData")
+    @Test(dataProvider = "checkoutValidationData",
+          description = "TC-12/13/14: Verify that an incomplete checkout form shows the correct validation error")
     @Story("Form validation")
-    @Description("Data-driven: each CSV row supplies partial form data and the validation error it should trigger")
+    @Severity(SeverityLevel.NORMAL)
     public void tcDD_checkoutValidationShowsCorrectError(
             String firstname, String lastname, String zip,
             String expectedError, String description) {
