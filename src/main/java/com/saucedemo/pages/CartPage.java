@@ -37,11 +37,17 @@ public class CartPage extends BasePage {
 
     @Step("Remove '{itemName}' from cart page")
     public void removeItem(String itemName) {
+        By cartRow = By.xpath(
+            "//div[contains(@class,'cart_item') and .//div[text()='" + itemName + "']]"
+        );
         By removeBtn = By.xpath(
             "//div[contains(@class,'cart_item') and .//div[text()='" + itemName + "']]" +
             "//button[contains(text(),'Remove')]"
         );
         waitForClickable(removeBtn).click();
+        // Wait for the item's row to leave the DOM before returning — confirms the
+        // removal has actually rendered before any subsequent getItemCount() call.
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(cartRow));
     }
 
     @Step("Click Checkout")
