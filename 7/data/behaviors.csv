@@ -1,0 +1,8 @@
+"BROKEN","EPIC","FAILED","FEATURE","PASSED","SKIPPED","STORY","UNKNOWN"
+"0","","2","Cart","0","0","Remove from cart","0"
+"0","","0","Cart","2","0","Add to cart","0"
+"0","","0","Login","2","0","Valid credentials","0"
+"1","","0","Cart","0","0","Cart page","0"
+"2","","0","Checkout","0","0","Happy path","0"
+"0","","0","Login","3","0","Invalid credentials","0"
+"3","","0","Checkout","0","0","Form validation","0"
