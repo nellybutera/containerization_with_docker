@@ -66,3 +66,6 @@ allure serve allure-results
 
 Static values (URLs, valid credentials, happy-path form data) go in `src/test/resources/testdata.properties`.
 Data-driven validation scenarios (invalid login combos, incomplete checkout forms) go in the CSV files under `src/test/resources/testdata/` — add a row, no Java changes needed.
+
+
+# this is a new push
